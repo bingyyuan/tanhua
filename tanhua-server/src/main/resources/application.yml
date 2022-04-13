@@ -1,0 +1,75 @@
+server:
+  port: 10880
+dubbo:
+  application:
+    name: tanhua-server
+  registry:
+    address: zookeeper://192.168.137.160:2181
+  consumer:
+    # 启动时是否检查提供者的存在
+    check: false
+# log
+logging:
+  level:
+    root: info
+    com:
+      tanhua: debug
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg - %logger{15}%n\'
+
+tanhua:
+  # 环信配置
+  huanxin:
+    url: http://a1.easemob.com/
+    orgName: 1100210128203775
+    appName: tanhua
+    clientId: YXA69S_vv-QlQmaJcXFr8VgFuA
+    clientSecret: YXA6geW8sILBJtyVk2JEPmgrWG1P99k
+  face:
+    appId: 22949516
+    apiKey: uDkEBDhtO02soeMB6kuMZTZi
+    secretKey: sMGUX8tzPhc0eBfvy3rbGYuXiK6MZCEF
+  oss:
+    endpoint: http://oss-cn-shenzhen.aliyuncs.com
+    bucketName: sztanhua
+    url: https://sztanhua.oss-cn-shenzhen.aliyuncs.com
+    accessKeyId: LTAI4GARN5zTxDNnkKmAQUzX
+    accessKeySecret: mVRMvjbbYI3BPnwkj1i8sXi5nLuo4i
+  # jwt 的密钥
+  secret: 76bd425b6f29f7fcc2e0bfc286043df1
+  # 大宇短信
+  sms:
+    validateCodeTemplateCode: SMS_189616640
+    signName: 黑马程序员
+    parameterName: code
+    accessKeyId: LTAI4GARN5zTxDNnkKmAQUzX
+    accessKeySecret: mVRMvjbbYI3BPnwkj1i8sXi5nLuo4i
+  redisValidateCodeKeyPrefix: VALIDATECODE_
+  luckyVoiceCount: 5
+
+spring:
+  redis:
+    host: 192.168.137.160
+    port: 6379
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+
+# ===================================================================
+# 分布式文件系统FDFS配置
+# ===================================================================
+fdfs:
+  so-timeout: 1500
+  connect-timeout: 600
+  #缩略图生成参数
+  thumb-image:
+    width: 150
+    height: 150
+  #TrackerList参数,支持多个
+  tracker-list: 192.168.137.160:22122
+  web-server-url: http://192.168.137.160:8888/
+rocketmq:
+  name-server: 192.168.137.160:9876
+  producer:
+    group: tanhua

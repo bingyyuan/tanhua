@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tanhua.dubbo.mapper.QuestionnaireMapper">
+    <select id="findAll" resultMap="detailMap">
+        select q.id,q.name,q.cover,q.lv,q.star,r.id as reportId,l.name as level,
+               sq.id as question_id,sq.question,
+               qo.id as option_id,qo.option,qo.sort
+        From tb_questionnaire q
+                 inner join tb_questionnaire_level l on l.id=q.lv
+                 inner join tb_soul_question sq on q.id=sq.questionnaireId
+                 inner join tb_question_options qo on qo.questionId=sq.id
+                 left join tb_user_report r on r.questionnaireId=q.id and r.userId=#{loginUserId}
+        order by q.lv,sq.id,qo.sort
+    </select>
+    <resultMap id="detailMap" type="Questionnaire">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="cover" column="cover"/>
+        <result property="lv" column="lv"/>
+        <result property="level" column="level"/>
+        <result property="star" column="star"/>
+        <result property="reportId" column="reportId"/>
+        <collection property="questions" ofType="SoulQuestion">
+            <id property="id" column="question_id"/>
+            <result property="question" column="question"/>
+            <collection property="options" ofType="QuestionOptions">
+                <id property="id" column="option_id"/>
+                <result property="option" column="option"/>
+            </collection>
+        </collection>
+    </resultMap>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tanhua.dubbo.mapper.DimensionMapper">
+    <select id="findByReportId" resultType="map">
+        select t.name as `key`, cast(rd.dimensionValue as char) as `value`
+        from tb_report_dimension rd
+        inner join tb_dimension_type t on rd.dimensionTypeId=t.id
+        where rd.reportId=#{reportId}
+    </select>
+    
+    <insert id="addReportDimension" parameterType="String">
+        insert into tb_report_dimension (dimensionTypeId,dimensionValue,reportId)
+        select q.dimensionTypeId,sum(o.score)/count(1)*10,a.reportId
+        from tb_user_answer a
+                 inner join tb_soul_question q on a.questionId=q.id
+                 inner join tb_dimension_type t on t.id=q.dimensionTypeId
+                 inner join tb_question_options o on a.optionId=o.id
+        where a.reportId=#{reportId}
+        group by q.dimensionTypeId,t.name,a.reportId
+    </insert>
+
+    <delete id="deleteReportDimension" parameterType="String">
+        delete from tb_report_dimension where reportId=#{reportId}
+    </delete>
+</mapper>

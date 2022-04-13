@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tanhua.dubbo.mapper.UserReportMapper">
+    <select id="findSimilarUserIds" resultType="long">
+        select distinct t.userId from (
+            select userId from tb_user_report
+            where userId!=#{userId} and questionnaireId=#{questionnaireId} and conclusionID=#{conclusionID}
+            order by created desc
+        ) t limit 0,5
+    </select>
+
+    <insert id="addReport">
+        insert into tb_user_report
+        select t.reportId,t.questionnaireId,${userId},now(),c.id
+        from tb_conclusion c inner join (
+            select sum(o.score) score,a.reportId,q.questionnaireId
+            from tb_user_answer a
+                     inner join tb_soul_question q on a.questionId=q.id
+                     inner join tb_question_options o on a.optionId=o.id
+            where a.reportId=#{reportId}
+            group by a.reportId,q.questionnaireId
+        ) t where t.score&gt;=c.min and t.score&lt;c.max
+    </insert>
+
+    <select id="findByAnswer" parameterType="UserAnswer" resultType="String">
+        select r.id from tb_user_report r
+            inner join tb_soul_question sq on sq.questionnaireId=r.questionnaireId
+        where sq.id=#{questionId} and r.userId=#{userId}
+    </select>
+
+    <select id="findMaxLevelByUserId" parameterType="long" resultType="int">
+        select max(q.lv) from tb_user_report r inner join tb_questionnaire q on r.questionnaireId=q.id
+        where r.userId=#{userId}
+    </select>
+</mapper>

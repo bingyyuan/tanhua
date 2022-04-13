@@ -1,0 +1,38 @@
+#数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://192.168.137.160:3306/sz108-tanhua?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
+  data:
+    # mongodb连接地址
+    mongodb:
+      uri: mongodb://192.168.137.160:27017/tanhua_mongo
+#dubbo配置
+dubbo:
+  application:
+    name: tanhua-dubbo-service
+  registry:
+    address: zookeeper://192.168.137.160:2181
+  scan:
+    base-packages: com.tanhua.dubbo.api
+  provider:
+    timeout: 60000
+#Mybatis plus配置
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: tb_
+      id-type: auto
+  type-aliases-package: com.tanhua.domain
+  mapper-locations: classpath:mapper/*.xml
+#log日志
+logging:
+  level:
+    root: info
+    #com.tanhua的包下的日志，debug级别
+    com:
+      tanhua: debug
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %msg - %logger{15}%n\'
